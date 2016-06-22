@@ -1,0 +1,6 @@
+name: CommandBlock
+main: com.boydti.cbp.Main
+version: 3.3.0
+description: Properly manage command blocks
+softdepend: [PlotSquared]
+authors: [Empire92]
