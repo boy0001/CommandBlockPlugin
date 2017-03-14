@@ -13,14 +13,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.boydti.cbs.CommandProcessor;
@@ -77,9 +73,6 @@ public class Main extends JavaPlugin implements Listener {
         CommandProcessor.manager = new PSProcessor(enabled);
         debug("Registering events");
         Bukkit.getPluginManager().registerEvents(this, this);
-        debug("Registering packet listener");
-        debug("---------------------");
-        new PacketListener();
     }
     
     @EventHandler
@@ -116,36 +109,6 @@ public class Main extends JavaPlugin implements Listener {
         return;
     }
     
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        Block block = event.getClickedBlock();
-        Player player = event.getPlayer();
-        if (!player.isSneaking() && block.getType() == Material.COMMAND && player.hasPermission("commandblock.use") && !player.isOp()) {
-            player.sendMessage("Use /setcommand <command>");
-            event.setCancelled(true);
-            return;
-        }
-        ItemStack hand = player.getItemInHand();
-        int id = hand == null ? 0 : hand.getTypeId();
-        if (id != 137 || event.getClickedBlock().getTypeId() == 137) {
-            return;
-        }
-        event.setCancelled(true);
-        event.setUseInteractedBlock(Result.DENY);
-        
-        if (!player.hasPermission("commandblock.use")) {
-            player.sendMessage("Lacking permission: commandblock.use");
-            return;
-        }
-        
-        Block rel = event.getClickedBlock().getRelative(event.getBlockFace());
-        if (hasPermission(event.getPlayer(), rel.getLocation())) {
-            rel.setType(Material.COMMAND);
-        }
-    }
     public static boolean hasPermission(Player player, Location loc) {
         Block block = loc.getBlock();
         BlockBreakEvent call = new BlockBreakEvent(block, player);

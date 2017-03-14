@@ -47,6 +47,11 @@ public class PSProcessor extends CommandProcessor {
         }, 213);
     }
     
+    public boolean isCommandAllowed(String cmd) {
+        //        return enabled.contains(cmd.toLowerCase());
+        return true;
+    }
+    
     @Override
     public boolean isLocationAllowed(String world, int x, int y, int z) {
         if (lastRegion == null) {
